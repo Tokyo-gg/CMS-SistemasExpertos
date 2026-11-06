@@ -1,2 +1,2 @@
-# CMS-Plataforma-de-Gesti-n-y-Publicaci-n-de-Contenido-Digital
+# CMS-SistemasExpertos
 Proyecto Sistemas Expertos 
