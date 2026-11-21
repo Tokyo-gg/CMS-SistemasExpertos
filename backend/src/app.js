@@ -4,7 +4,8 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import { notFound } from './middlewares/notFound.js';
 import { errorHandler } from './middlewares/errorHandler.js';
-import { AppError } from './utils/AppError.js';
+import authRoutes from './routes/auth.routes.js';
+
 
 const app = express();
 
@@ -18,9 +19,8 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-app.get('/api/error-test', () => {
-  throw new AppError('Prueba de error controlado', 400);
-});
+app.use('/api/auth', authRoutes);
+
 
 app.use(notFound);
 app.use(errorHandler);
