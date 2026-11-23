@@ -42,10 +42,22 @@ async function seedCategories() {
 }
 
 async function run() {
-  await connectDB();
-  await seedAdmin();
-  await seedCategories();
-  await mongoose.disconnect();
+  for (const key of ['MONGODB_URI', 'ADMIN_EMAIL', 'ADMIN_NAME', 'ADMIN_USERNAME', 'ADMIN_PASSWORD']) {
+    if (!process.env[key]) throw new Error(`Falta ${key} en backend/.env`);
+  }
+  if (process.env.ADMIN_PASSWORD.length < 12) {
+    throw new Error('ADMIN_PASSWORD debe tener al menos 12 caracteres');
+  }
+  try {
+    await connectDB();
+    await seedAdmin();
+    await seedCategories();
+  } finally {
+    await mongoose.disconnect();
+  }
 }
 
-run();
+run().catch(error => {
+  console.error('No se pudo completar el seed:', error.message);
+  process.exitCode = 1;
+});
