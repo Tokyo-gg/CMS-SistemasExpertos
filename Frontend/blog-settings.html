@@ -68,7 +68,7 @@
               <legend class="visually-hidden">Datos del blog</legend>
               <div class="mb-3">
                 <label class="form-label" for="name">Nombre del blog</label>
-                <input class="form-control" id="name" name="name" type="text" required maxlength="100">
+                <input class="form-control" id="name" name="name" type="text" required minlength="3" maxlength="100">
               </div>
               <div class="mb-3">
                 <label class="form-label" for="slug">Dirección del blog</label>
@@ -100,7 +100,7 @@
             <p class="text-secondary">La persona detrás de las palabras.</p>
             <div class="mb-3">
               <label for="profile-name" class="form-label">Nombre público</label>
-              <input id="profile-name" name="name" class="form-control" required maxlength="100">
+              <input id="profile-name" name="name" class="form-control" required minlength="2" maxlength="100">
             </div>
             <div class="mb-3">
               <label class="form-label" for="bio">Biografía</label>

@@ -41,5 +41,43 @@ export async function getPublicBlog(slug) {
   });
 
   if (!blog || !blog.ownerId) throw new AppError("Blog no encontrado", 404);
+  const owner = blog.ownerId;
+  const result = blog.toJSON();
+  delete result.ownerId;
+  result.owner = {
+    _id: owner._id,
+    name: owner.name,
+    bio: owner.bio,
+    avatarUrl: owner.avatarUrl,
+  };
+  return result;
+}
+
+export async function getMyBlog(ownerId) {
+  const blog = await Blog.findOne({ ownerId });
+  if (!blog) throw new AppError('Todavía no tienes un blog', 404);
+  return blog;
+}
+
+export async function updateBlog(ownerId, id, data = {}) {
+  const blog = await Blog.findById(id);
+  if (!blog) throw new AppError('Blog no encontrado', 404);
+  if (String(blog.ownerId) !== String(ownerId)) {
+    throw new AppError('No puedes editar un blog ajeno', 403);
+  }
+
+  if (data.slug !== undefined && toSlug(data.slug) !== blog.slug) {
+    throw new AppError('La dirección del blog no se puede cambiar', 409);
+  }
+
+  for (const field of ALLOWED_FIELDS.filter(value => value !== 'slug')) {
+    if (data[field] === undefined) continue;
+    if (typeof data[field] !== 'string') {
+      throw new AppError(`El campo "${field}" debe ser texto`, 400);
+    }
+    blog[field] = data[field];
+  }
+
+  await blog.save();
   return blog;
 }
