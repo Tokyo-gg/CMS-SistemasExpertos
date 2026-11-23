@@ -39,9 +39,8 @@ function nav() {
 
   $('#admin-link').hidden = !['admin', 'administrador'].includes(user.role);
 
-  $('#logout').onclick = async () => {
+  $('#logout').onclick = () => {
     try {
-      await api('/auth/logout', { method: 'POST' });
       saveToken(null);
       user = null;
       location.assign('index.html');

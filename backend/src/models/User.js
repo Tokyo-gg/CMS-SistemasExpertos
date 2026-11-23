@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema(
       required: [true, "El nombre es obligatorio"],
       trim: true,
       minlength: [2, "El nombre debe tener al menos 2 caracteres"],
-      maxlength: [80, "El nombre no puede superar 80 caracteres"],
+      maxlength: [100, "El nombre no puede superar 100 caracteres"],
     },
     username: {
       type: String,
@@ -43,8 +43,8 @@ const userSchema = new mongoose.Schema(
       enum: Object.values(USER_ROLES),
       default: USER_ROLES.AUTHOR,
     },
-    bio: { type: String, trim: true, maxlength: 300, default: "" },
-    avatarUrl: { type: String, trim: true, default: "" },
+    bio: { type: String, trim: true, maxlength: 600, default: "" },
+    avatarUrl: { type: String, trim: true, maxlength: 2048, default: "" },
     status: {
       type: String,
       enum: Object.values(USER_STATUS),

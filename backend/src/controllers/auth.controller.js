@@ -2,7 +2,7 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import * as authService from '../services/auth.service.js';
 
 export const register = asyncHandler(async (req, res) => {
-  const { user, token } = await authService.register(req.body);
+  const { user, token } = await authService.register(req.body ?? {});
   res.status(201).json({
     success: true,
     data: { user, token },
@@ -22,7 +22,7 @@ export const login = asyncHandler(async (req, res) => {
 export const me = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
-    data: { user: req.user },
+    data: req.user,
   });
 });
 
@@ -30,7 +30,7 @@ export const updateMe = asyncHandler(async (req, res) => {
   const user = await authService.updateProfile(req.user._id, req.body ?? {});// se usa req.us
   res.status(200).json({
     success: true,
-    data: { user },
+    data: user,
     message: 'Perfil actualizado correctamente',
   });
 });
