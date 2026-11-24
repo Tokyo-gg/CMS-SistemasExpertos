@@ -27,7 +27,7 @@ export const me = asyncHandler(async (req, res) => {
 });
 
 export const updateMe = asyncHandler(async (req, res) => {
-  const user = await authService.updateProfile(req.user._id, req.body ?? {});// se usa req.us
+  const user = await authService.updateProfile(req.user._id, req.body ?? {});// se usa req.user porque no se puede usar req.body directamente ya que no contiene el id del usuario, se pasa un objeto vacío si req.body es undefined
   res.status(200).json({
     success: true,
     data: user,
