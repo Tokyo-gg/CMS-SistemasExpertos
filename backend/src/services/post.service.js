@@ -8,11 +8,7 @@ import { toSlug } from "../utils/slug.js";
 
 const MIN_CONTENT_TO_PUBLISH = 50;
 const FIELDS = ["title", "excerpt", "content", "coverUrl"];
-const STATUS_ALIASES = {
-  borrador: "draft",
-  publicado: "published",
-  archivado: "archived",
-};
+export const STATUS_ALIASES = { borrador: "draft", publicado: "published", archivado: "archived" };
 
 function normalizeTags(tags) {
   if (tags === undefined) return [];
@@ -284,6 +280,14 @@ export async function archivePost(postId, userId) {
   if (post.status !== POST_STATUS.ARCHIVED) {
     post.status = POST_STATUS.ARCHIVED; // borrado lógico: el documento se conserva
     await post.save();
+  }
+  return post;
+}
+
+export async function findPublicPostById(postId) {
+  const post = await Post.findOne({ _id: postId, status: POST_STATUS.PUBLISHED }).populate(PUBLIC_POPULATE);
+  if (!post || !post.authorId || !post.blogId || !post.categoryId) {
+    throw new AppError('Publicación no encontrada', 404);
   }
   return post;
 }
