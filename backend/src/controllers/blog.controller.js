@@ -1,12 +1,12 @@
-import { asyncHandler } from '../utils/asyncHandler.js';
-import * as blogService from '../services/blog.service.js';
+import { asyncHandler } from "../utils/asyncHandler.js";
+import * as blogService from "../services/blog.service.js";
 
 export const createBlog = asyncHandler(async (req, res) => {
   const blog = await blogService.createBlog(req.user._id, req.body ?? {});
   res.status(201).json({
     success: true,
     data: blog,
-    message: 'Blog creado correctamente',
+    message: "Blog creado correctamente",
   });
 });
 
@@ -21,6 +21,10 @@ export const getMyBlog = asyncHandler(async (req, res) => {
 });
 
 export const updateBlog = asyncHandler(async (req, res) => {
-  const blog = await blogService.updateBlog(req.user._id, req.params.id, req.body ?? {});
-  res.status(200).json({ success: true, data: blog, message: 'Blog actualizado correctamente' });
+  const blog = await blogService.updateBlog(req.params.id, req.user._id, req.body ?? {});
+  res.status(200).json({
+    success: true,
+    data: { blog },
+    message: 'Blog actualizado correctamente',
+  });
 });

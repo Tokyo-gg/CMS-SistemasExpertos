@@ -11,6 +11,7 @@ import categoryRoutes from './routes/category.routes.js';
 import blogRoutes from './routes/blog.routes.js';
 import { getMyBlog } from './controllers/blog.controller.js';
 import { authenticate } from './middlewares/auth.js';
+import { postRouter, meRouter } from './routes/post.routes.js';
 
 
 const app = express();
@@ -42,6 +43,8 @@ app.use('/api/auth', authRoutes);
 app.get('/api/me/blog', authenticate, getMyBlog);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/posts', postRouter);
+app.use('/api/me', meRouter);
 
 app.use(express.static(fileURLToPath(new URL('../../Frontend/', import.meta.url)), { dotfiles: 'deny' }));
 

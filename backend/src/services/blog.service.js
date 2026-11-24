@@ -55,29 +55,38 @@ export async function getPublicBlog(slug) {
 
 export async function getMyBlog(ownerId) {
   const blog = await Blog.findOne({ ownerId });
-  if (!blog) throw new AppError('Todavía no tienes un blog', 404);
+  if (!blog) throw new AppError("Todavía no tienes un blog", 404);
   return blog;
 }
 
-export async function updateBlog(ownerId, id, data = {}) {
-  const blog = await Blog.findById(id);
+export async function updateBlog(blogId, userId, data = {}) {
+  const blog = await Blog.findById(blogId);
   if (!blog) throw new AppError('Blog no encontrado', 404);
-  if (String(blog.ownerId) !== String(ownerId)) {
-    throw new AppError('No puedes editar un blog ajeno', 403);
+
+  // Regla de propiedad: el dueño sale de la BD, el usuario sale del token
+  if (!blog.ownerId.equals(userId)) {
+    throw new AppError('No tienes permiso para modificar este blog', 403);
   }
 
-  if (data.slug !== undefined && toSlug(data.slug) !== blog.slug) {
-    throw new AppError('La dirección del blog no se puede cambiar', 409);
-  }
-
-  for (const field of ALLOWED_FIELDS.filter(value => value !== 'slug')) {
-    if (data[field] === undefined) continue;
-    if (typeof data[field] !== 'string') {
-      throw new AppError(`El campo "${field}" debe ser texto`, 400);
+  const updates = {};
+  for (const field of ALLOWED_FIELDS) {
+    if (data[field] !== undefined) {
+      if (typeof data[field] !== 'string') {
+        throw new AppError(`El campo "${field}" debe ser texto`, 400);
+      }
+      updates[field] = data[field];
     }
-    blog[field] = data[field];
   }
 
-  await blog.save();
-  return blog;
+  if (updates.slug !== undefined) {
+    updates.slug = toSlug(updates.slug);
+    if (!updates.slug) throw new AppError('Slug inválido', 400);
+  }
+
+  if (Object.keys(updates).length === 0) {
+    throw new AppError('No hay campos válidos para actualizar', 400);
+  }
+
+  blog.set(updates);
+  return blog.save();
 }
